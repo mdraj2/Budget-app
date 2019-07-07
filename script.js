@@ -24,24 +24,53 @@ var budgetController = (function(){
 // this will handle the view
 var UIController = (function(){
 	// some code later
+	//Use an object to store the add 
+	var DOMstrings = {
+		inputType: '.add__type',
+		inputDescription: '.add__description',
+		inputValue: '.add__value',
+		inputAddButton: '.add__btn'
+	};
+
+	return {
+		getInput:  function(){
+		// note that if we want these values. so the function returns an object is required for the public properties
+			return {
+				type: document.querySelector(DOMstrings.inputType).value, //inc or exp as specfied on html doc
+				description: document.querySelector(DOMstrings.inputDescription).value,
+				value: document.querySelector(DOMstrings.inputValue).value
+			};
+		},
+		getDOMstrings: function(){
+			return DOMstrings;
+		}
+	};
+	
 })();
 
 // GLOBAL APP CONTROLLER
 var controller = (function(budgetCtrl, UICtrl){
-
+// the controller tells what to do for the other controllers
+		
+	
+	var DOM = UICtrl.getDOMstrings();
+	
 	var ctrlAddItem = function() {
-		console.log('passed');
-		// this will be shared by both events
 		// Get the field input data
+		var userInput = UIController.getInput();
+		console.log(userInput);
+
 		// Add the item to the budget controller
+
 		// Add the item to the user interace 
+
 		// calculate the budget
+
 		// Display the budget on UI
 
-	}
+	};
 
-	document.querySelector('.add__btn').addEventListener('click', ctrlAddItem)
-
+	document.querySelector(DOM.inputAddButton).addEventListener('click', ctrlAddItem);
 	// we also will handle the keypress as well. This will happen on the global event space
 	// e is the event which will be automatically sent by the browser
 	// keycode 13 is the return keyword
@@ -49,6 +78,7 @@ var controller = (function(budgetCtrl, UICtrl){
 		if(e.keyCode == 13 || e.which === 13){
 			ctrlAddItem();
 		}
-	})
+	});
+	
 
 })(budgetController,UIController);
