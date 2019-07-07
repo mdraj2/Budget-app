@@ -18,8 +18,43 @@ should be interested in doing one thing only. They dont even know the other one 
 
 // this will handle the data 
 var budgetController = (function(){
-	//some code later
+	/* what does the data look like? there will be income and expenses. Each item will 
+	have a description and a value. We also need a way to distingush between income and expenses. We will also 
+	need a unique id as well. Perphaps an object will do.
+
+	We will make a constructor because we need to make many different entries
+	*/
+	var Expense = function(id,description,value){
+		this.id = id;
+		this.description = description;
+		this.value = value;
+	};
+
+	var Income = function(id,description,value){
+		this.id = id;
+		this.description = description;
+		this.value = value;
+	};
+
+	var data = {
+		allItems: {
+			exp: [],
+			inc: []
+		},
+
+		totals : {
+			exp: 0,
+			inc: 0
+		}
+	};
+
+	return {
+		getData: function() {return data;}
+	};
+
 })();
+
+
 
 // this will handle the view
 var UIController = (function(){
@@ -33,6 +68,8 @@ var UIController = (function(){
 	};
 
 	return {
+		getDOMstrings: function(){return DOMstrings;},
+
 		getInput:  function(){
 		// note that if we want these values. so the function returns an object is required for the public properties
 			return {
@@ -40,10 +77,8 @@ var UIController = (function(){
 				description: document.querySelector(DOMstrings.inputDescription).value,
 				value: document.querySelector(DOMstrings.inputValue).value
 			};
-		},
-		getDOMstrings: function(){
-			return DOMstrings;
 		}
+		
 	};
 	
 })();
