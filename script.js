@@ -52,13 +52,22 @@ var UIController = (function(){
 var controller = (function(budgetCtrl, UICtrl){
 // the controller tells what to do for the other controllers
 		
-	
-	var DOM = UICtrl.getDOMstrings();
+	var setUpEventListeners = function() {
+		var DOM = UICtrl.getDOMstrings();
+		document.querySelector(DOM.inputAddButton).addEventListener('click', ctrlAddItem);
+	// we also will handle the keypress as well. This will happen on the global event space
+	// e is the event which will be automatically sent by the browser
+	// keycode 13 is the return keyword
+		document.addEventListener('keypress',function(e){
+			if(e.keyCode == 13 || e.which === 13){
+				ctrlAddItem();
+			}
+		});
+	};
 	
 	var ctrlAddItem = function() {
 		// Get the field input data
 		var userInput = UIController.getInput();
-		console.log(userInput);
 
 		// Add the item to the budget controller
 
@@ -70,15 +79,14 @@ var controller = (function(budgetCtrl, UICtrl){
 
 	};
 
-	document.querySelector(DOM.inputAddButton).addEventListener('click', ctrlAddItem);
-	// we also will handle the keypress as well. This will happen on the global event space
-	// e is the event which will be automatically sent by the browser
-	// keycode 13 is the return keyword
-	document.addEventListener('keypress',function(e){
-		if(e.keyCode == 13 || e.which === 13){
-			ctrlAddItem();
+	return {
+		init: function(){
+			console.log('application has started');
+			setUpEventListeners();
 		}
-	});
-	
+	};
 
 })(budgetController,UIController);
+
+// run the application
+controller.init();
