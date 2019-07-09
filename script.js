@@ -93,7 +93,9 @@ var UIController = (function(){
 		inputType: '.add__type',
 		inputDescription: '.add__description',
 		inputValue: '.add__value',
-		inputAddButton: '.add__btn'
+		inputAddButton: '.add__btn',
+		incomeContainer:'.income__list',
+		expenseContainer:'.expense__list'
 	};
 
 	return {
@@ -106,6 +108,29 @@ var UIController = (function(){
 				description: document.querySelector(DOMstrings.inputDescription).value,
 				value: document.querySelector(DOMstrings.inputValue).value
 			};
+		},
+
+		addListItem: function(obj,type) {
+			var html,newHTML,element,description,value,ID;
+			description = obj.description;
+			value = obj.value;
+			ID = obj.id;
+			// Create HTML string with placeholder text
+			// there is income and expenses here
+			
+			if(type == 'inc'){
+				element = DOMstrings.incomeContainer;
+				html = '<div class = "item" id="income-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>';
+			} else if(type == 'exp') {
+				element = DOMstrings.expenseContainer;
+				html = '<div class = "item" id="expense-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>';
+			}
+			// replace placeholder text with actual data
+			newHTML = html.replace('%id%',ID);
+			newHTML = newHTML.replace('%description%',description);
+			newHTML = newHTML.replace('%value%',value);
+			// Insert the HTML to the DOM
+			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 		}
 		
 	};
@@ -137,7 +162,7 @@ var controller = (function(budgetCtrl, UICtrl){
 		// Add the new item to the budget controller
 		newItem = budgetCtrl.addItem(userInput);
 		// Add the new item to the user interace 
-		// newItemUI = UICtrl.displayNewItem();
+		newItemUI = UICtrl.addListItem(newItem,userInput.type);
 		// calculate the budget
 
 		// Display the budget on UI
@@ -146,7 +171,6 @@ var controller = (function(budgetCtrl, UICtrl){
 
 	return {
 		init: function(){
-			console.log('application has started');
 			setUpEventListeners();
 		}
 	};
