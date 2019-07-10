@@ -131,6 +131,25 @@ var UIController = (function(){
 			newHTML = newHTML.replace('%value%',value);
 			// Insert the HTML to the DOM
 			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
+		},
+
+		clearFields: function() {
+			var fields,fieldsArr;
+			// querySelectorAll returns a list not an array that we can loop over
+			// this is like css if we want to select Description and inputValue
+			fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+			// this is the way to convert to an array
+			// var fieldsArr = Array.prototype.slice.call(fields);
+			// console.log(fields,fieldsArr);
+			// fieldsArr.forEach(function(current,index,array){
+			// 	current.value ="";
+			// });
+			// the fields of description and value put in the main input bar is reset to nothing after push
+			fields.forEach(function(current,index,array){
+				current.value ="";
+			});
+			// highlight the description
+		 	fields[0].focus();
 		}
 		
 	};
@@ -163,6 +182,9 @@ var controller = (function(budgetCtrl, UICtrl){
 		newItem = budgetCtrl.addItem(userInput);
 		// Add the new item to the user interace 
 		newItemUI = UICtrl.addListItem(newItem,userInput.type);
+		// Clear the field
+		UICtrl.clearFields();
+
 		// calculate the budget
 
 		// Display the budget on UI
