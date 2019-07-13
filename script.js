@@ -18,25 +18,31 @@ should be interested in doing one thing only. They dont even know the other one 
 
 // this will handle the data 
 var budgetController = (function(){
+	"use strict";
 	/* what does the data look like? there will be income and expenses. Each item will 
 	have a description and a value. We also need a way to distingush between income and expenses. We will also 
 	need a unique id as well. Perphaps an object will do.
 
 	We will make a constructor because we need to make many different entries
 	*/
-	var Expense = function(id,description,value){
+	var Expense = function(){}, 
+		Income= function(){},
+		data = {};
+
+
+	Expense = function(id,description,value){
 		this.id = id;
 		this.description = description;
 		this.value = value;
 	};
 
-	var Income = function(id,description,value){
+	Income = function(id,description,value){
 		this.id = id;
 		this.description = description;
 		this.value = value;
 	};
 
-	var data = {
+	data = {
 		allItems: {
 			exp: [],
 			inc: []
@@ -50,7 +56,11 @@ var budgetController = (function(){
 
 	return {
 		addItem: function(newInput) {
-			var type,description,value,newItem,ID;
+			var type = String,
+				description = String,
+				value = String,
+				newItem = {},
+				ID = Number;
 
 			type = newInput.type;
 			description = newInput.description;
@@ -64,20 +74,22 @@ var budgetController = (function(){
 			
 
 			//Create new item based on 'inc' or 'exp' type
-			if (type == 'exp') {
+			if (type === 'exp') {
 				newItem = new Expense(ID,description,value);
-			} else if (type == 'inc') {
+			} else if (type === 'inc') {
 				newItem = new Income(ID,description,value);
 			}
 
 			// now to push the object
+
 			data.allItems[type].push(newItem);
+			
 			// return the newItem
 			return newItem;
 		},
 
-		testing: function() {
-			console.log(data);
+		testing: function(obj) {
+			return this.addItem(obj);
 		}
 	};
 
@@ -87,9 +99,13 @@ var budgetController = (function(){
 
 // this will handle the view
 var UIController = (function(){
+	"use strict";
 	// some code later
 	//Use an object to store the add 
-	var DOMstrings = {
+	var DOMstrings = {};
+
+
+	DOMstrings = {
 		inputType: '.add__type',
 		inputDescription: '.add__description',
 		inputValue: '.add__value',
@@ -106,12 +122,18 @@ var UIController = (function(){
 			return {
 				type: document.querySelector(DOMstrings.inputType).value, //inc or exp as specfied on html doc
 				description: document.querySelector(DOMstrings.inputDescription).value,
-				value: document.querySelector(DOMstrings.inputValue).value
+				value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
 			};
 		},
 
 		addListItem: function(obj,type) {
-			var html,newHTML,element,description,value,ID;
+			var html = String,
+				newHTML = String,
+				element = String,
+				description = String,
+				value = String,
+				ID = Number;
+
 			description = obj.description;
 			value = obj.value;
 			ID = obj.id;
@@ -134,7 +156,8 @@ var UIController = (function(){
 		},
 
 		clearFields: function() {
-			var fields,fieldsArr;
+			var fields = {},
+				fieldsArr = {};
 			// querySelectorAll returns a list not an array that we can loop over
 			// this is like css if we want to select Description and inputValue
 			fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
@@ -158,10 +181,16 @@ var UIController = (function(){
 
 // GLOBAL APP CONTROLLER
 var controller = (function(budgetCtrl, UICtrl){
+	"use strict";
 // the controller tells what to do for the other controllers
+	var setUpEventListeners = function(){},
+		DOM = {},
+		ctrlAddItem = function(){},
+		updateBudget = function(){};
+
 		
-	var setUpEventListeners = function() {
-		var DOM = UICtrl.getDOMstrings();
+	setUpEventListeners = function() {
+		DOM = UICtrl.getDOMstrings();
 		document.querySelector(DOM.inputAddButton).addEventListener('click', ctrlAddItem);
 	// we also will handle the keypress as well. This will happen on the global event space
 	// e is the event which will be automatically sent by the browser
@@ -172,20 +201,31 @@ var controller = (function(budgetCtrl, UICtrl){
 			}
 		});
 	};
+
 	
-	var ctrlAddItem = function() {
-		var userInput,newItem,newItemUI;
+	ctrlAddItem = function() {
+		var userInput = {},
+			newItem = {},
+			newItemUI = {};
 		// Get the field input data
 		userInput = UICtrl.getInput();
 
-		// Add the new item to the budget controller
-		newItem = budgetCtrl.addItem(userInput);
-		// Add the new item to the user interace 
-		newItemUI = UICtrl.addListItem(newItem,userInput.type);
-		// Clear the field
-		UICtrl.clearFields();
+		if(userInput.description !=="" && !isNaN(userInput.value) && userInput.value != 0)
+		{		// Add the new item to the budget controller
+			newItem = budgetCtrl.addItem(userInput);
+			// Add the new item to the user interace 
+			newItemUI = UICtrl.addListItem(newItem,userInput.type);
+			// Clear the field
+			UICtrl.clearFields();
+			// Calculate and update the budget
+			updateBudget();
+		}
+	};
 
+	updateBudget = function() {
 		// calculate the budget
+
+		// return the budget
 
 		// Display the budget on UI
 
