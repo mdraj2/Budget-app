@@ -148,7 +148,8 @@ var UIController = (function(){
 		expenseContainer:'.expense__list',
 		budgetLabel: '.budget__value',
 		incomeLabel: '______________',
-		expenseLabel: '______________'
+		expenseLabel: '______________',
+		containerLabel : ".container"
 	};
 
 	return {
@@ -179,10 +180,10 @@ var UIController = (function(){
 			
 			if(type == 'inc'){
 				element = DOMstrings.incomeContainer;
-				html = '<div class = "item" id="income-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>';
+				html = '<div class = "item" id="inc-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>';
 			} else if(type == 'exp') {
 				element = DOMstrings.expenseContainer;
-				html = '<div class = "item" id="expense-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>';
+				html = '<div class = "item" id="exp-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>';
 			}
 			// replace placeholder text with actual data
 			newHTML = html.replace('%id%',ID);
@@ -229,7 +230,9 @@ var controller = (function(budgetCtrl, UICtrl){
 	var setUpEventListeners = function(){},
 		DOM = {},
 		ctrlAddItem = function(){},
-		updateBudget = function(){};
+		ctrlDeleteItem = function(){},
+		updateBudget = function(){},
+		traverseDOM = function(){};
 
 		
 	setUpEventListeners = function() {
@@ -243,6 +246,8 @@ var controller = (function(budgetCtrl, UICtrl){
 				ctrlAddItem();
 			}
 		});
+
+		document.querySelector(DOM.containerLabel).addEventListener('click',ctrlDeleteItem);
 	};
 
 	
@@ -265,6 +270,26 @@ var controller = (function(budgetCtrl, UICtrl){
 		}
 	};
 
+	ctrlDeleteItem = function(e) {
+		var itemID = String,
+			splitID = String,
+			type = String,
+			ID = String;
+
+
+		itemID = traverseDOM(e,"item").id;
+
+		console.log(itemID);
+
+		if(itemID) {
+			// even though string is a primative by putting a dot we make it to an object and access string methods
+			splitID = itemID.split('-');
+			type = splitID[0];
+			ID = splitID[1];
+		}
+	};
+
+
 	updateBudget = function() {
 		var budget = {};
 		// calculate the budget
@@ -274,6 +299,18 @@ var controller = (function(budgetCtrl, UICtrl){
 		// Display the budget on UI
 		UICtrl.displayBudget(budget);
 
+	};
+
+	traverseDOM = function(e,className) {
+		var DOMelement = e.target;
+
+ 		while(DOMelement.classList && !DOMelement.classList.contains(className)){
+
+ 			DOMelement = DOMelement.parentNode;
+ 			console.log(DOMelement);
+ 		}
+
+ 		return DOMelement;
 	};
 
 	return {
