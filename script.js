@@ -97,6 +97,25 @@ var budgetController = (function(){
 			return newItem;
 		},
 
+		deleteItem: function(type,ID) {
+			var ids = [],
+				index;
+
+			ids = data.allItems[type].map(function(current,index,array){
+				return current.id;
+			});
+
+			index = ids.indexOf(ID);
+			// if not found -1 is returned
+
+			if(index !== -1) {
+				// first argument is the position in the data array and the second is the number of
+				// elements
+				data.allItems[type].splice(index, 1); 
+			}
+			console.log(data.allItems);
+		},
+
 		calculateBudget: function(){
 			// get used to the methodolgy that either get or set data
 			// calculate the total income and expenses
@@ -271,22 +290,30 @@ var controller = (function(budgetCtrl, UICtrl){
 	};
 
 	ctrlDeleteItem = function(e) {
-		var itemID = String,
+		var itemID = false,
 			splitID = String,
 			type = String,
-			ID = String;
+			ID = String,
+			className = "item__delete--btn";
+			
 
-
-		itemID = traverseDOM(e,"item").id;
-
-		console.log(itemID);
+		if(e.target.classList.contains(className)){
+			console.log(e.target.classList);
+			itemID = traverseDOM(e,"item").id;
+		}
 
 		if(itemID) {
 			// even though string is a primative by putting a dot we make it to an object and access string methods
 			splitID = itemID.split('-');
 			type = splitID[0];
-			ID = splitID[1];
+			ID = parseInt(splitID[1]);
+			// remove the data from the database
+			budgetCtrl.deleteItem(type,ID);
+			// update the UI
 		}
+
+		
+
 	};
 
 
@@ -307,7 +334,6 @@ var controller = (function(budgetCtrl, UICtrl){
  		while(DOMelement.classList && !DOMelement.classList.contains(className)){
 
  			DOMelement = DOMelement.parentNode;
- 			console.log(DOMelement);
  		}
 
  		return DOMelement;
