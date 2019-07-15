@@ -1,55 +1,37 @@
-/*we are going to make the modular pattern here
-use closures and IIFE
-
-the IFFE makes a new scope which is not visible from the outside scope
-The variable and function cannot be accessed from the outside
-but the difference is that with the IFFE we can give the outside scope the 
-objects that it can access
-
-Currently there will be no interactions between the two modules ever and do not share the 
-global space at all. Currently, only budgetController.publicTest() can only be acessed.
-
-This is good because then we can work on the code of the budgetController without having to
-worry about anyother modules. This is called seperations of concerns. Each part of the application
-should be interested in doing one thing only. They dont even know the other one even exists
-
-
-*/
-
 // this will handle the data 
 var budgetController = (function(){
 	"use strict";
-	/* what does the data look like? there will be income and expenses. Each item will 
-	have a description and a value. We also need a way to distingush between income and expenses. We will also 
-	need a unique id as well. Perphaps an object will do.
-
-	We will make a constructor because we need to make many different entries
-	*/
 	var Expense = function(){}, 
 		Income= function(){},
 		data = {},
 		calculateTotal = function(){};
-
-
 	Expense = function(id,description,value){
 		this.id = id;
 		this.description = description;
 		this.value = value;
+		this.percentage = -1;
 	};
-
+	Expense.prototype.calcPercentage = function(totalIncome){
+		if(totalIncome>0){
+			this.percentage = Math.round((this.value/totalIncome)*100);
+		} else {
+			this.percentage = -1;
+		}
+	};
+	Expense.prototype.getPercent = function(){
+		return this.percentage;
+	};
 	Income = function(id,description,value){
 		this.id = id;
 		this.description = description;
 		this.value = value;
 	};
-
 	calculateTotal = function(type) {
 		data.totals[type] = 0;
 		data.allItems[type].forEach(function(item) {
 		data.totals[type] += item.value;
 		});
 	};
-
 	data = {
 		allItems: {
 			exp: [],
@@ -63,8 +45,6 @@ var budgetController = (function(){
 		budget: 0,
 		percentage: -1
 	};
-
-
 	return {
 		addItem: function(newInput) {
 			var type = String,
@@ -96,7 +76,6 @@ var budgetController = (function(){
 			// return the newItem
 			return newItem;
 		},
-
 		deleteItem: function(type,ID) {
 			var ids = [],
 				index;
@@ -113,9 +92,7 @@ var budgetController = (function(){
 				// elements
 				data.allItems[type].splice(index, 1); 
 			}
-			console.log(data.allItems);
 		},
-
 		calculateBudget: function(){
 			// get used to the methodolgy that either get or set data
 			// calculate the total income and expenses
@@ -129,9 +106,19 @@ var budgetController = (function(){
 			} else {
 				data.percentage = -1;
 			}
-
 		},
-
+		calculatePercentages: function(){
+			data.allItems.exp.forEach(function(expense){
+				expense.calcPercentage(data.totals.inc);
+			});
+		},
+		getPercentages:function(){
+			// return an array of equal size containing the percentages in the expenses
+			var allPerc = data.allItems.exp.map(function(current){
+				return current.getPercent();
+			});
+			return allPerc;
+		},	
 		getBudget: function(){
 			return {
 				budget:data.budget,
@@ -140,7 +127,6 @@ var budgetController = (function(){
 				percentage: data.percentage
 			};
 		},
-
 		testing: function(obj) {
 			return this.addItem(obj);
 		}
@@ -148,16 +134,10 @@ var budgetController = (function(){
 
 })();
 
-
-
 // this will handle the view
 var UIController = (function(){
 	"use strict";
-	// some code later
-	//Use an object to store the add 
 	var DOMstrings = {};
-
-
 	DOMstrings = {
 		inputType: '.add__type',
 		inputDescription: '.add__description',
@@ -170,10 +150,8 @@ var UIController = (function(){
 		expenseLabel: '______________',
 		containerLabel : ".container"
 	};
-
 	return {
 		getDOMstrings: function(){return DOMstrings;},
-
 		getInput:  function(){
 		// note that if we want these values. so the function returns an object is required for the public properties
 			return {
@@ -182,7 +160,6 @@ var UIController = (function(){
 				value: Math.abs(parseFloat(document.querySelector(DOMstrings.inputValue).value))
 			};
 		},
-
 		addListItem: function(obj,type) {
 			var html = String,
 				newHTML = String,
@@ -211,7 +188,6 @@ var UIController = (function(){
 			// Insert the HTML to the DOM
 			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 		},
-
 		clearFields: function() {
 			var fields = {},
 				fieldsArr = {};
@@ -231,35 +207,33 @@ var UIController = (function(){
 			// highlight the description
 		 	fields[0].focus();
 		},
-
+		deleteListItem: function(selectorID){
+			// note that you can only delete a child of an element not itself
+			var el = {};
+			el = document.getElementById(selectorID);
+			el.parentNode.removeChild(el);
+		},
 		displayBudget: function(obj) {
 			var currentBudget = Number;
 			currentBudget = document.querySelector(DOMstrings.budgetLabel);
 			currentBudget.textContent = '$' + obj.budget.toString();
 		}
-		
 	};
-	
 })();
 
 // GLOBAL APP CONTROLLER
 var controller = (function(budgetCtrl, UICtrl){
 	"use strict";
-// the controller tells what to do for the other controllers
 	var setUpEventListeners = function(){},
 		DOM = {},
 		ctrlAddItem = function(){},
 		ctrlDeleteItem = function(){},
 		updateBudget = function(){},
-		traverseDOM = function(){};
-
-		
+		traverseDOM = function(){},
+		updatePercentages = function(){};
 	setUpEventListeners = function() {
 		DOM = UICtrl.getDOMstrings();
 		document.querySelector(DOM.inputAddButton).addEventListener('click', ctrlAddItem);
-	// we also will handle the keypress as well. This will happen on the global event space
-	// e is the event which will be automatically sent by the browser
-	// keycode 13 is the return keyword
 		document.addEventListener('keypress',function(e){
 			if(e.keyCode == 13 || e.which === 13){
 				ctrlAddItem();
@@ -268,8 +242,6 @@ var controller = (function(budgetCtrl, UICtrl){
 
 		document.querySelector(DOM.containerLabel).addEventListener('click',ctrlDeleteItem);
 	};
-
-	
 	ctrlAddItem = function() {
 		var userInput = {},
 			newItem = {},
@@ -286,9 +258,10 @@ var controller = (function(budgetCtrl, UICtrl){
 			UICtrl.clearFields();
 			// Calculate and update the budget
 			updateBudget();
+			// calculate and update the percentages
+			updatePercentages();
 		}
 	};
-
 	ctrlDeleteItem = function(e) {
 		var itemID = false,
 			splitID = String,
@@ -298,7 +271,6 @@ var controller = (function(budgetCtrl, UICtrl){
 			
 
 		if(e.target.classList.contains(className)){
-			console.log(e.target.classList);
 			itemID = traverseDOM(e,"item").id;
 		}
 
@@ -309,14 +281,14 @@ var controller = (function(budgetCtrl, UICtrl){
 			ID = parseInt(splitID[1]);
 			// remove the data from the database
 			budgetCtrl.deleteItem(type,ID);
-			// update the UI
+			// Delete the item in the UI
+			UICtrl.deleteListItem(itemID);
+			// update and show
+			updateBudget();
+			// calculate and update the percentages
+			updatePercentages();
 		}
-
-		
-
 	};
-
-
 	updateBudget = function() {
 		var budget = {};
 		// calculate the budget
@@ -325,9 +297,16 @@ var controller = (function(budgetCtrl, UICtrl){
 		budget = budgetCtrl.getBudget();
 		// Display the budget on UI
 		UICtrl.displayBudget(budget);
-
 	};
-
+	updatePercentages = function() {
+		var percentages = {};
+		// calculate the percentages of all expense items when item is added or deleted
+		budgetCtrl.calculatePercentages();
+		// read from the budget controller
+		percentages = budgetCtrl.getPercentages();
+		// update the user interface with the new percentages
+		console.log(percentages);
+	};
 	traverseDOM = function(e,className) {
 		var DOMelement = e.target;
 
@@ -338,7 +317,6 @@ var controller = (function(budgetCtrl, UICtrl){
 
  		return DOMelement;
 	};
-
 	return {
 		init: function(){
 			// note that with the init we can reset the entire page during loading
@@ -351,7 +329,6 @@ var controller = (function(budgetCtrl, UICtrl){
 			setUpEventListeners();
 		}
 	};
-
 })(budgetController,UIController);
 
 // run the application
