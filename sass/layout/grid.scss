@@ -1,0 +1,31 @@
+.row::after{
+	clear: both;
+	content: "";
+	display: block;
+}
+
+.container {
+	margin: 20px;
+	max-width: 90vw;
+	border: 1px black solid;
+	border-radius: 10px;
+}
+
+.col{
+	&-1-of-2{
+		width: 50%;
+		float:left;
+	}
+}
+
+.heading{
+	&--income{
+		text-align: center;
+		background-color: rgba(0,255,0,0.2);
+	}
+
+	&--expense{
+		text-align: center;
+		background-color: rgba(255,0,0,0.2);
+	}
+}

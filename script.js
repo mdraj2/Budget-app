@@ -148,7 +148,8 @@ var UIController = (function(){
 		budgetLabel: '.budget__value',
 		incomeLabel: '______________',
 		expenseLabel: '______________',
-		containerLabel : ".container"
+		containerLabel : ".container",
+		expensePercLabel: ".item__percentage"
 	};
 	return {
 		getDOMstrings: function(){return DOMstrings;},
@@ -179,7 +180,7 @@ var UIController = (function(){
 				html = '<div class = "item" id="inc-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>';
 			} else if(type == 'exp') {
 				element = DOMstrings.expenseContainer;
-				html = '<div class = "item" id="exp-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>';
+				html = '<div class = "item" id="exp-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class ="item__percentage">%percentage%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>';
 			}
 			// replace placeholder text with actual data
 			newHTML = html.replace('%id%',ID);
@@ -217,6 +218,29 @@ var UIController = (function(){
 			var currentBudget = Number;
 			currentBudget = document.querySelector(DOMstrings.budgetLabel);
 			currentBudget.textContent = '$' + obj.budget.toString();
+		},
+
+		displayPercentages: function(percentages) {
+			/*here the all elements with class of percentages are found and stored
+			in fields variable.
+			nodeListForEach iterates through the each element and sets the text content with percentage
+			with % appended if it is not less than zero.*/
+			var fields = {},
+				nodeListForEach = function(){};
+			fields = document.querySelectorAll(DOMstrings.expensePercLabel);
+			nodeListForEach = function(list,callback) {
+				for(var i = 0; i < list.length; i++){
+					callback(list[i],i);
+				}
+			};
+			
+			nodeListForEach(fields, function(current,index){
+				if(percentages[index] > 0){
+					current.textContent = percentages[index] + '%'; 
+				} else {
+					current.textContent = "---";
+				}
+			});
 		}
 	};
 })();
@@ -304,8 +328,8 @@ var controller = (function(budgetCtrl, UICtrl){
 		budgetCtrl.calculatePercentages();
 		// read from the budget controller
 		percentages = budgetCtrl.getPercentages();
-		// update the user interface with the new percentages
-		console.log(percentages);
+		// update the user interface with the new percentages. Array is passed
+		UICtrl.displayPercentages(percentages);
 	};
 	traverseDOM = function(e,className) {
 		var DOMelement = e.target;

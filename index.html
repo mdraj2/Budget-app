@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 	<div class = "top">
@@ -22,14 +23,36 @@
 		<button class="add__btn">CLICK THIS TO ADD</button>
 	</div>
 
-	<div class = "container">
-		<div class ="income">
-			<div class="income__list"></div>
+	<div class = "container item">
+
+		<div class = row>
+			<div class="col-1-of-2">
+				<h2 class = "heading--income">Income</h2>
+				<div class ="item--income">
+					<div class="income__list">
+						<!-- html = '<div class = "item" id="inc-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>'; -->
+					</div>
+				</div>
+
+			</div>
+			<div class="col-1-of-2">
+				<h2 class = "heading--expense">Expenses</h2>
+				<div class ="item--expense">
+					<div class="expense__list">
+						<!-- '<div class = "item" id="exp-%id%"><div class = "item__description">%description%</div><div class="item__value">%value%</div><div class ="item__percentage">%percentage%</div><div class="item__delete"><button class ="item__delete--btn">Delete Entry</button></div></div>'; -->
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<div class ="expense">
-			<div class="expense__list"></div>
-		</div>
+		<!-- <div class = row>
+			<div class="col-1-of-2">
+				<h2>Income</h2>
+			</div>
+			<div class="col-1-of-2">
+				<h2>Expenses</h2>
+			</div>
+		</div> -->
 	</div>
 	<script src="script.js"></script>
 </body>

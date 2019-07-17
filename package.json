@@ -1,0 +1,24 @@
+{
+  "name": "project_budget_app",
+  "version": "1.0.0",
+  "description": "Budget-app\r ========\r Description\r --------\r This is a simple budget app that keeps track of income and expenses",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile:sass": "node-sass sass/main.scss css/style.css",
+    "compile:sassCon": "node-sass sass/main.scss css/style.css -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdraj2/Budget-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdraj2/Budget-app/issues"
+  },
+  "homepage": "https://github.com/mdraj2/Budget-app#readme",
+  "dependencies": {
+    "node-sass": "^4.12.0"
+  }
+}
