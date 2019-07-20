@@ -5,33 +5,42 @@ var budgetController = (function(){
 		Income= function(){},
 		data = {},
 		calculateTotal = function(){};
+
+	// Expense constructor function. 
 	Expense = function(id,description,value){
 		this.id = id;
 		this.description = description;
 		this.value = value;
 		this.percentage = -1;
 	};
+	// updates the percentage of a expense item as a percentage of total income
 	Expense.prototype.calcPercentage = function(totalIncome){
 		if(totalIncome>0){
 			this.percentage = Math.round((this.value/totalIncome)*100);
 		} else {
+			// negative incomes are not calculated
 			this.percentage = -1;
 		}
 	};
+
 	Expense.prototype.getPercent = function(){
 		return this.percentage;
 	};
+	// Income Constructor function
 	Income = function(id,description,value){
 		this.id = id;
 		this.description = description;
 		this.value = value;
 	};
+	// Accepts 'inc' or 'exp' and updates the private data object containing the totals property. 
+	// Each element in the array is added and stored 
 	calculateTotal = function(type) {
 		data.totals[type] = 0;
 		data.allItems[type].forEach(function(item) {
 		data.totals[type] += item.value;
 		});
 	};
+	// private data object
 	data = {
 		allItems: {
 			exp: [],
@@ -46,18 +55,21 @@ var budgetController = (function(){
 		percentage: -1
 	};
 	return {
-		addItem: function(newInput) {
+		// public method to append new item to the data object. Accepts an object with the specfied
+		// properties
+		addItem: function(input) {
 			var type = String,
 				description = String,
 				value = String,
 				newItem = {},
 				ID = Number;
 
-			type = newInput.type;
-			description = newInput.description;
-			value = newInput.value;
-			// last ID plus 1
+			type = input.type;
+			description = input.description;
+			value = input.value;
+			// first item id (either for type 'exp' or 'inc') is 0  
 			if (data.allItems[type].length > 0){
+				// access the id property of the last item in array increment the id value
 				ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
 			} else {
 				ID = 0;
@@ -65,6 +77,7 @@ var budgetController = (function(){
 			
 
 			//Create new item based on 'inc' or 'exp' type
+			//Constructor pattern was used
 			if (type === 'exp') {
 				newItem = new Expense(ID,description,value);
 			} else if (type === 'inc') {
@@ -137,7 +150,8 @@ var budgetController = (function(){
 // this will handle the view
 var UIController = (function(){
 	"use strict";
-	var DOMstrings = {};
+	var DOMstrings = {},
+		formatNumber = function(){};
 	DOMstrings = {
 		inputType: '.add__type',
 		inputDescription: '.add__description',
@@ -151,6 +165,43 @@ var UIController = (function(){
 		containerLabel : ".container",
 		expensePercLabel: ".item__percentage"
 	};
+
+	formatNumber = function(num,type){
+		/*
+		+ or - before the number 
+		exactly 2 demical points
+		comma seperating the thousands
+
+		2310.4567 -> + 2,310.456
+		*/
+		var stringNum = String,
+			demicalLocation = Number,
+			demicals = String,
+			wholeNumbers = String,
+			fomated = [],
+			commaSepString = String;
+
+		 stringNum = Math.abs(num).toFixed(2);
+		 demicalLocation = stringNum.indexOf(".");
+		if (demicalLocation === -1){
+			demicalLocation = stringNum.length;
+		}
+		// from including the demical to the end of the array
+		 demicals = stringNum.slice(demicalLocation);
+		// from location 0 to demicallocation but not including
+		 wholeNumbers = stringNum.slice(0,demicalLocation);
+		for(var i = wholeNumbers.length; i > 3; i -= 3) {
+			fomated.unshift(wholeNumbers.slice(i-3,i));
+		}
+		fomated.unshift(wholeNumbers.slice(0,i));
+
+		commaSepString =  (type === "exp" ? "-": "+") + ''+ fomated.toString() + demicals;
+
+		return commaSepString;
+
+	};
+
+
 	return {
 		getDOMstrings: function(){return DOMstrings;},
 		getInput:  function(){
@@ -185,7 +236,7 @@ var UIController = (function(){
 			// replace placeholder text with actual data
 			newHTML = html.replace('%id%',ID);
 			newHTML = newHTML.replace('%description%',description);
-			newHTML = newHTML.replace('%value%',value);
+			newHTML = newHTML.replace('%value%',formatNumber(value,type));
 			// Insert the HTML to the DOM
 			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 		},
@@ -215,9 +266,12 @@ var UIController = (function(){
 			el.parentNode.removeChild(el);
 		},
 		displayBudget: function(obj) {
-			var currentBudget = Number;
+			var currentBudget = Number,
+				type = String;
 			currentBudget = document.querySelector(DOMstrings.budgetLabel);
-			currentBudget.textContent = '$' + obj.budget.toString();
+			type = (obj.budget > 0) ? 'inc' : 'exp';
+			currentBudget.textContent = '$' + formatNumber(obj.budget,type);
+			// need add functionality that shows the total income and expense
 		},
 
 		displayPercentages: function(percentages) {
@@ -241,7 +295,7 @@ var UIController = (function(){
 					current.textContent = "---";
 				}
 			});
-		}
+		},
 	};
 })();
 
