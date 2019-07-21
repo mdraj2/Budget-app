@@ -1,4 +1,7 @@
 // this will handle the data 
+// TODO 
+// Add total income and expense to the UI
+// Add focusing to the input
 var budgetController = (function(){
 	"use strict";
 	var Expense = function(){}, 
@@ -163,7 +166,8 @@ var UIController = (function(){
 		incomeLabel: '______________',
 		expenseLabel: '______________',
 		containerLabel : ".container",
-		expensePercLabel: ".item__percentage"
+		expensePercLabel: ".item__percentage",
+		dateLabel: '.budet__title--month'
 	};
 
 	formatNumber = function(num,type){
@@ -296,6 +300,23 @@ var UIController = (function(){
 				}
 			});
 		},
+
+		displayMonth: function(){
+			// this will only run during initialisation
+			var now = {},
+				year = String,
+				month = Number,
+				MonthArray = {};
+
+			MonthArray = ["January","Febuary","March","April","May","June",
+			"July","August","September","October","November","December"];	
+			now = new Date();
+			year = now.getFullYear();
+
+			month = MonthArray[now.getMonth()];
+			document.querySelector(DOMstrings.dateLabel).textContent = 'Available budget in '+ month + ' '+ year;
+
+		}
 	};
 })();
 
@@ -304,22 +325,32 @@ var controller = (function(budgetCtrl, UICtrl){
 	"use strict";
 	var setUpEventListeners = function(){},
 		DOM = {},
+		SelectElemAndEvent = function(){},
 		ctrlAddItem = function(){},
 		ctrlDeleteItem = function(){},
 		updateBudget = function(){},
 		traverseDOM = function(){},
 		updatePercentages = function(){};
+
 	setUpEventListeners = function() {
 		DOM = UICtrl.getDOMstrings();
-		document.querySelector(DOM.inputAddButton).addEventListener('click', ctrlAddItem);
+		SelectElemAndEvent(DOM.inputAddButton,'click', ctrlAddItem);
+		SelectElemAndEvent(DOM.containerLabel,'click',ctrlDeleteItem);
+		document.querySelector(DOM.inputType).addEventListener('change',UICtrl.changedType);
+		// document.querySelector(DOM.inputAddButton).addEventListener('click', ctrlAddItem);
+		// document.querySelector(DOM.containerLabel).addEventListener('click',ctrlDeleteItem);
+		// Global Listener
 		document.addEventListener('keypress',function(e){
 			if(e.keyCode == 13 || e.which === 13){
 				ctrlAddItem();
 			}
 		});
-
-		document.querySelector(DOM.containerLabel).addEventListener('click',ctrlDeleteItem);
 	};
+
+	SelectElemAndEvent = function(selector,event,callbackfun) {
+		return document.querySelector(selector).addEventListener(event,callbackfun)
+	};
+
 	ctrlAddItem = function() {
 		var userInput = {},
 			newItem = {},
@@ -404,6 +435,8 @@ var controller = (function(budgetCtrl, UICtrl){
 				totalExp: 0,
 				percentage: 0}
 			);
+
+			UICtrl.displayMonth();
 			setUpEventListeners();
 		}
 	};
