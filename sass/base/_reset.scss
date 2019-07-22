@@ -1,0 +1,19 @@
+// remove all the default settings set by the browser
+*, *::before, *::after{
+	// set padding and margin to zero for all elements and pseudoelements
+	margin: 0;
+	padding: 0;
+	// this is set to inherit. Children will inherit from the parent
+	box-sizing: inherit;
+}
+
+html {
+	// the default is 16px, using 62.5% will make the rem = 10px
+	font-size: 62.5%;
+}
+
+body {
+	// the children will inherit border box. 
+	box-sizing: border-box;
+	font-family: 'Roboto', sans-serif;
+}

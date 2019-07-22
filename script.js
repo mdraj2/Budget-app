@@ -162,12 +162,12 @@ var UIController = (function(){
 		inputAddButton: '.add__btn',
 		incomeContainer:'.income__list',
 		expenseContainer:'.expense__list',
-		budgetLabel: '.summary-budget__total',
+		budgetLabel: '.summary__budget',
 		incomeLabel: '______________',
 		expenseLabel: '______________',
 		containerLabel : ".container",
 		expensePercLabel: ".item__percentage",
-		dateLabel: '.summary-budget__date--month'
+		dateLabel: '.summary__title'
 	};
 
 	formatNumber = function(num,type){
