@@ -12,16 +12,16 @@ body {
 
 .header {
   background-color: rgba(0, 0, 0, 0);
-  padding-bottom: 6rem; }
+  padding-bottom: 3rem; }
   .header__title {
     text-align: center; }
     .header__title--primary {
       font-family: 'Pacifico', cursive;
-      font-size: 8rem;
+      font-size: 6rem;
       padding-bottom: 1rem; }
     .header__title--secondary {
       font-family: 'Open Sans', sans-serif;
-      font-size: 2rem; }
+      font-size: 4rem; }
 
 .summary {
   text-align: center; }
@@ -30,6 +30,9 @@ body {
   .summary__budget {
     margin: 2rem;
     font-size: 2rem; }
+
+.newItem {
+  display: inline; }
 
 .row::after {
   clear: both;

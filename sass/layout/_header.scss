@@ -1,16 +1,16 @@
 .header {
 	background-color: $header-color-green;
-	padding-bottom: 6rem;
+	padding-bottom: 3rem;
 	&__title{
 		text-align: center;
 		&--primary{
 			font-family: 'Pacifico', cursive;
-			font-size: 8rem;
+			font-size: 6rem;
 			padding-bottom: 1rem;
 		}
 		&--secondary{
 			font-family: 'Open Sans', sans-serif;
-			font-size: 2rem;
+			font-size: 4rem;
 		}
 	}
 }
