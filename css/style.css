@@ -32,7 +32,23 @@ body {
     font-size: 2rem; }
 
 .newItem {
-  display: inline; }
+  width: 70%;
+  margin: 0 auto;
+  border: 2px solid grey;
+  padding: 2rem;
+  border-radius: 2rem; }
+
+legend {
+  display: inline;
+  width: auto; }
+
+.add__btn {
+  display: block;
+  margin: 0 auto;
+  border-radius: 5rem; }
+
+.innercontent {
+  margin-bottom: 2rem; }
 
 .row::after {
   clear: both;

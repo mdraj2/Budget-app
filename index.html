@@ -23,26 +23,32 @@
 			<div class= "summary__income"></div>
 			<div class= "summary__expense"></div>
 	</section>
-	<form>
-	  <div class="row">
-	    <div class="col">
-	      <label for="cashflowType">Type:</label>
-			<select class ="add__type form-control" id = "cashflowType">
-				<option value="inc">+</option>
-				<option value="exp">-</option>
-			</select>
-	    </div>
-	    <div class="col">
-	      <label for="descriptionType">Description:</label>
-		  <input class ="add__description form-control" type = 'text' placeholder="Add description" id="descriptionType">
-	    </div>
-	    <div class="col">
-	      <label for="itemAmount">Amount $:</label>
-		  <input class ="add__value form-control" type = 'number' placeholder="Value" id= "itemAmount">
-	    </div>
-	  </div>
-	  <button class="add__btn">CLICK THIS TO ADD</button>
-	</form>
+    
+
+    <fieldset class = "newItem">
+		<legend>Add new Item:</legend> 
+		<div class="row innercontent">
+		    <div class="col">
+		      <label for="cashflowType">Type:</label>
+				<select class ="add__type form-control" id = "cashflowType">
+					<option value="inc">+</option>
+					<option value="exp">-</option>
+				</select>
+		    </div>
+		    <div class="col">
+		      <label for="descriptionType">Description:</label>
+			  <input class ="add__description form-control" type = 'text' placeholder="Add description" id="descriptionType">
+		    </div>
+		    <div class="col">
+		      <label for="itemAmount">Amount $:</label>
+			  <input class ="add__value form-control" type = 'number' placeholder="Value" id= "itemAmount">
+		    </div>
+	  	</div>
+	  <button class="btn btn-lg add__btn ">CLICK THIS TO ADD</button>
+	</fieldset>
+ 
+	
+
 
 	<div class = "container item">
 		<div class = row>
